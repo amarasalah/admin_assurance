@@ -220,60 +220,36 @@
             <div class="row align-items-center justify-content-center">
               <div class="col-lg-3 col-6">
                 <div class="small-box bg-info">
-                  <div class="inner">
-                    <h3>150</h3>
-                    <p>Nombre de contrats</p>
-                  </div>
-                  <div class="icon">
-                    <i class="ion ion-bag"></i>
-                  </div>
-                  <a href="#" class="small-box-footer"
-                    >More info <i class="fas fa-arrow-circle-right"></i
-                  ></a>
+                    <div class="inner">
+                        <h3 id="response-count">0</h3>
+                        <p>Nombre de contrats</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-bag"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">
+                        More info <i class="fas fa-arrow-circle-right"></i>
+                    </a>
                 </div>
-              </div>
-              <div class="col-lg-3 col-6">
+            </div>
+            <div class="col-lg-3 col-6">
                 <div class="small-box bg-success">
-                  <div class="inner">
-                    <h3>53</h3>
-                    <p>Nombre d'Utilisateurs</p>
-                  </div>
-                  <div class="icon">
-                    <i class="ion ion-stats-bars"></i>
-                  </div>
-                  <a href="#" class="small-box-footer"
-                    >More info <i class="fas fa-arrow-circle-right"></i
-                  ></a>
+                    <div class="inner">
+                        <h3 id="user-count">0</h3>
+                        <p>Nombre d'Utilisateurs</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-stats-bars"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">
+                        More info <i class="fas fa-arrow-circle-right"></i>
+                    </a>
                 </div>
+            </div>
+
               </div>
-              <div class="col-lg-3 col-6">
-                <div class="small-box bg-warning">
-                  <div class="inner">
-                    <h3>44</h3>
-                    <p>Nombre d'Agent</p>
-                  </div>
-                  <div class="icon">
-                    <i class="ion ion-person-add"></i>
-                  </div>
-                  <a href="#" class="small-box-footer"
-                    >More info <i class="fas fa-arrow-circle-right"></i
-                  ></a>
-                </div>
-              </div>
-              <div class="col-lg-3 col-6">
-                <div class="small-box bg-danger">
-                  <div class="inner">
-                    <h3>65</h3>
-                    <p>Nombre de sinistres</p>
-                  </div>
-                  <div class="icon">
-                    <i class="ion ion-pie-graph"></i>
-                  </div>
-                  <a href="#" class="small-box-footer"
-                    >More info <i class="fas fa-arrow-circle-right"></i
-                  ></a>
-                </div>
-              </div>
+
+
             </div>
 
             <!-- Main row -->
@@ -823,6 +799,56 @@
 
       // Fetch user data from Firestore
 
+
+      document.addEventListener("DOMContentLoaded", function() {
+        // Firestore reference
+        const db = firebase.firestore();
+
+        // Function to fetch and display the number of responses
+        function updateResponseCount() {
+            db.collection("responses").get()
+                .then((querySnapshot) => {
+                    const responseCount = querySnapshot.size;
+                    document.getElementById("response-count").innerText = responseCount;
+                })
+                .catch((error) => {
+                    console.error("Error getting response count: ", error);
+                });
+        }
+
+        // Function to fetch and display the number of users
+        function updateUserCount() {
+            db.collection("users").get()
+                .then((querySnapshot) => {
+                    const userCount = querySnapshot.size;
+                    document.getElementById("user-count").innerText = userCount;
+                })
+                .catch((error) => {
+                    console.error("Error getting user count: ", error);
+                });
+        }
+
+        // Update counts on page load
+        updateResponseCount();
+        updateUserCount();
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       db.collection("users")
         .get()
         .then((querySnapshot) => {
@@ -1181,6 +1207,38 @@ async function populateUserSelect() {
           console.error("Error storing user data:", error);
         });
     });
+    document.addEventListener("DOMContentLoaded", function() {
+      // Firestore reference
+      const db = firebase.firestore();
+
+      // Function to fetch and display the number of responses
+      function updateResponseCount() {
+          db.collection("responses").get()
+              .then((querySnapshot) => {
+                  const responseCount = querySnapshot.size;
+                  document.getElementById("response-count").innerText = responseCount;
+              })
+              .catch((error) => {
+                  console.error("Error getting response count: ", error);
+              });
+      }
+
+      // Function to fetch and display the number of users
+      function updateUserCount() {
+          db.collection("users").get()
+              .then((querySnapshot) => {
+                  const userCount = querySnapshot.size;
+                  document.getElementById("user-count").innerText = userCount;
+              })
+              .catch((error) => {
+                  console.error("Error getting user count: ", error);
+              });
+      }
+
+      // Update counts on page load
+      updateResponseCount();
+      updateUserCount();
+  });
 
     // Call the function to populate the user select dropdown
     populateUserSelect();
