@@ -3,7 +3,18 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AdminLTE 3 | Dashboard</title>
+    <title>MaghrebiaAdmin | Dashboard</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+
+    <!-- SweetAlert2 -->
+
+    <!-- Theme style -->
+
+
+
+
 
     <!-- Google Font: Source Sans Pro -->
     <link
@@ -40,6 +51,9 @@
     <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css" />
     <!-- summernote -->
     <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css" />
+    <link rel="stylesheet" href="plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+    <!-- Toastr -->
+    <link rel="stylesheet" href="plugins/toastr/toastr.min.css">
   </head>
   <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
@@ -162,13 +176,13 @@
               data-accordion="false"
             >
               <li class="nav-item menu-open">
-                <a href="#" class="nav-link active">
+                <a href="./dashboard.html" class="nav-link active">
                   <i class="nav-icon fas fa-tachometer-alt"></i>
                   <p>Dashboard</p>
                 </a>
               </li>
               <li class="nav-item menu-open">
-                <a href="./contrat.html" class="nav-link">
+                <a href="./contrat.html" class="nav-link ">
                   <i class="nav-icon fas fa-tachometer-alt"></i>
                   <p>Contrats</p>
                 </a>
@@ -441,64 +455,15 @@
             </div>
           </div>
         </section>
-        <div class="row">
-          <div class="col-md-12">
-            <!-- USERS LIST -->
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">Utilisateurs</h3>
 
-                <div class="card-tools">
-                  <button
-                    type="button"
-                    class="btn btn-tool"
-                    data-card-widget="collapse"
-                  >
-                    <i class="fas fa-minus"></i>
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-tool"
-                    data-card-widget="remove"
-                  >
-                    <i class="fas fa-times"></i>
-                  </button>
-                </div>
-              </div>
-              <div class="card-body p-0">
-                <table class="table table-striped projects">
-                  <thead>
-                    <tr>
-                      <th style="width: 1%">#</th>
-                      <th style="width: 20%">Type de Contrat</th>
-                      <th style="width: 8%" class="text-center">
-                        Date de creation de Contrat
-                      </th>
-                      <th style="width: 20%">Benificiare de contrat</th>
-                      <th style="width: 20%"></th>
-                    </tr>
-                  </thead>
-                  <tbody id="response-table-body">
-                    <!-- User data will be populated here by JavaScript -->
-                  </tbody>
-                </table>
-              </div>
-              <!-- /.card-body -->
-            </div>
-            <section class="content">
-
-              </div>
-            </section>
-            <!--/.card -->
-          </div>
         </div>
       </div>
 
       <!-- /.content-wrapper -->
 
       <footer class="main-footer">
-        
-       
+
+
       </footer>
 
       <!-- Control Sidebar -->
@@ -508,6 +473,150 @@
       <!-- /.control-sidebar -->
     </div>
     <!-- ./wrapper -->
+    <div class="modal fade" id="modal-default">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card card-secondary">
+                  <div class="card-header">
+                    <h3 class="card-title">Ajouter un utilisateur</h3>
+                    <div class="card-tools">
+                      <button
+                        type="button"
+                        class="btn btn-tool"
+                        data-card-widget="collapse"
+                        title="Collapse"
+                      >
+                        <i class="fas fa-minus"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <form id="userForm">
+                      <div class="form-group">
+                        <label for="fullname">Nom et Prénom</label>
+                        <input
+                          type="text"
+                          id="fullname"
+                          class="form-control"
+                          required
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="email">Email</label>
+                        <input
+                          type="email"
+                          id="email"
+                          class="form-control"
+                          required
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="password">Password</label>
+                        <input
+                          type="password"
+                          id="password"
+                          class="form-control"
+                          required
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="birthdate">Birthdate</label>
+                        <input
+                          type="date"
+                          id="birthdate"
+                          class="form-control"
+                          required
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="country">Country</label>
+                        <input
+                          type="text"
+                          id="country"
+                          class="form-control"
+                          required
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="nationalId">National ID</label>
+                        <input
+                          type="text"
+                          id="nationalId"
+                          class="form-control"
+                          required
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input
+                          type="tel"
+                          id="phone"
+                          class="form-control"
+                          required
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="profileImageUrl">Profile Image URL</label>
+                        <input
+                          type="url"
+                          id="profileImageUrl"
+                          class="form-control"
+                          required
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="username">Username</label>
+                        <input
+                          type="text"
+                          id="username"
+                          class="form-control"
+                          required
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="role">Role</label>
+                        <select
+                          id="role"
+                          class="form-control custom-select"
+                          required
+                        >
+                          <option selected disabled>Role</option>
+                          <option value="user">User</option>
+                          <option value="admin">Admin</option>
+                        </select>
+                      </div>
+                      <div class="row">
+                        <div class="col-12">
+                          <button
+                            type="button"
+                            id="submitBtn"
+                            class="btn btn-success float-right"
+                          >
+                            Create New User
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
 
     <!-- jQuery -->
     <script src="plugins/jquery/jquery.min.js"></script>
@@ -515,6 +624,17 @@
     <script src="plugins/jquery-ui/jquery-ui.min.js"></script>
     <!-- Bootstrap 4 -->
     <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- SweetAlert2 -->
+<script src="plugins/sweetalert2/sweetalert2.min.js"></script>
+<!-- Toastr -->
+<script src="plugins/toastr/toastr.min.js"></script>
+<!-- AdminLTE App -->
+<script src="dist/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="dist/js/demo.js"></script>
     <!-- AdminLTE App -->
     <script src="dist/js/adminlte.js"></script>
 
@@ -527,6 +647,160 @@
     <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-functions.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.20.0/firebase-admin.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script>
+      $(function() {
+        var Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000
+        });
+
+        $('.swalDefaultSuccess').click(function() {
+          Toast.fire({
+            icon: 'success',
+            title: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+          })
+        });
+        $('.swalDefaultInfo').click(function() {
+          Toast.fire({
+            icon: 'info',
+            title: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+          })
+        });
+        $('.swalDefaultError').click(function() {
+          Toast.fire({
+            icon: 'error',
+            title: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+          })
+        });
+        $('.swalDefaultWarning').click(function() {
+          Toast.fire({
+            icon: 'warning',
+            title: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+          })
+        });
+        $('.swalDefaultQuestion').click(function() {
+          Toast.fire({
+            icon: 'question',
+            title: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+          })
+        });
+
+        $('.toastrDefaultSuccess').click(function() {
+          toastr.success('Lorem ipsum dolor sit amet, consetetur sadipscing elitr.')
+        });
+        $('.toastrDefaultInfo').click(function() {
+          toastr.info('Lorem ipsum dolor sit amet, consetetur sadipscing elitr.')
+        });
+        $('.toastrDefaultError').click(function() {
+          toastr.error('Lorem ipsum dolor sit amet, consetetur sadipscing elitr.')
+        });
+        $('.toastrDefaultWarning').click(function() {
+          toastr.warning('Lorem ipsum dolor sit amet, consetetur sadipscing elitr.')
+        });
+
+        $('.toastsDefaultDefault').click(function() {
+          $(document).Toasts('create', {
+            title: 'Toast Title',
+            body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+          })
+        });
+        $('.toastsDefaultTopLeft').click(function() {
+          $(document).Toasts('create', {
+            title: 'Toast Title',
+            position: 'topLeft',
+            body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+          })
+        });
+        $('.toastsDefaultBottomRight').click(function() {
+          $(document).Toasts('create', {
+            title: 'Toast Title',
+            position: 'bottomRight',
+            body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+          })
+        });
+        $('.toastsDefaultBottomLeft').click(function() {
+          $(document).Toasts('create', {
+            title: 'Toast Title',
+            position: 'bottomLeft',
+            body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+          })
+        });
+        $('.toastsDefaultAutohide').click(function() {
+          $(document).Toasts('create', {
+            title: 'Toast Title',
+            autohide: true,
+            delay: 750,
+            body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+          })
+        });
+        $('.toastsDefaultNotFixed').click(function() {
+          $(document).Toasts('create', {
+            title: 'Toast Title',
+            fixed: false,
+            body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+          })
+        });
+        $('.toastsDefaultFull').click(function() {
+          $(document).Toasts('create', {
+            body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.',
+            title: 'Toast Title',
+            subtitle: 'Subtitle',
+            icon: 'fas fa-envelope fa-lg',
+          })
+        });
+        $('.toastsDefaultFullImage').click(function() {
+          $(document).Toasts('create', {
+            body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.',
+            title: 'Toast Title',
+            subtitle: 'Subtitle',
+            image: '../../dist/img/user3-128x128.jpg',
+            imageAlt: 'User Picture',
+          })
+        });
+        $('.toastsDefaultSuccess').click(function() {
+          $(document).Toasts('create', {
+            class: 'bg-success',
+            title: 'Toast Title',
+            subtitle: 'Subtitle',
+            body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+          })
+        });
+        $('.toastsDefaultInfo').click(function() {
+          $(document).Toasts('create', {
+            class: 'bg-info',
+            title: 'Toast Title',
+            subtitle: 'Subtitle',
+            body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+          })
+        });
+        $('.toastsDefaultWarning').click(function() {
+          $(document).Toasts('create', {
+            class: 'bg-warning',
+            title: 'Toast Title',
+            subtitle: 'Subtitle',
+            body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+          })
+        });
+        $('.toastsDefaultDanger').click(function() {
+          $(document).Toasts('create', {
+            class: 'bg-danger',
+            title: 'Toast Title',
+            subtitle: 'Subtitle',
+            body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+          })
+        });
+        $('.toastsDefaultMaroon').click(function() {
+          $(document).Toasts('create', {
+            class: 'bg-maroon',
+            title: 'Toast Title',
+            subtitle: 'Subtitle',
+            body: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+          })
+        });
+      });
+    </script>
 
 
     <!-- Firebase Configuration and Initialization -->
@@ -590,9 +864,10 @@
                   <a class="btn btn-primary btn-sm" href="#">
                     <i class="fas fa-folder"></i> View
                   </a>
-                  <a class="btn btn-info btn-sm" href="#">
-                    <i class="fas fa-pencil-alt"></i> Edit
-                  </a>
+                  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-default">
+                     <i class="fas fa-pen"></i>
+                  Edit
+                </button>
                   <a class="btn btn-danger btn-sm delete-button" href="#" data-user-id="${
                     doc.id
                   }">
@@ -684,7 +959,7 @@
           let responseIndex = 1;
           querySnapshot.forEach((doc) => {
             const responseData = doc.data();
-   
+
 
             if (responseData.timestamp && responseData.userId) {
               const createdAt = responseData.timestamp.toDate();
@@ -697,7 +972,7 @@
                 .then((userDoc) => {
                   if (userDoc.exists) {
                     const userData = userDoc.data();
-                  
+
 
                     const responseRow = document.createElement("tr");
                     responseRow.dataset.docId = doc.id; // Store the document ID
@@ -844,7 +1119,7 @@
             console.error("Error creating user: ", error);
           });
       });
-    
+
       window.onload = fetchUsersAndContractCounts;
 
 
@@ -852,7 +1127,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 
 
-    
+
 async function populateUserSelect() {
       var userSelect = document.getElementById("userSelect");
       try {
@@ -910,5 +1185,6 @@ async function populateUserSelect() {
     // Call the function to populate the user select dropdown
     populateUserSelect();
     </script>
+
   </body>
 </html>
