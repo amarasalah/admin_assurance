@@ -61,27 +61,20 @@
           <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">
               <i class="far fa-bell"></i>
-              <span class="badge badge-warning navbar-badge">15</span>
-            </a>
-            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-              <span class="dropdown-item dropdown-header"
-                >15 Notifications</span
+              <span
+                class="badge badge-warning navbar-badge"
+                id="notification-count"
+                >0</span
               >
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">
-                <i class="fas fa-envelope mr-2"></i> 4 new messages
-                <span class="float-right text-muted text-sm">3 mins</span>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">
-                <i class="fas fa-users mr-2"></i> 8 friend requests
-                <span class="float-right text-muted text-sm">12 hours</span>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">
-                <i class="fas fa-file mr-2"></i> 3 new reports
-                <span class="float-right text-muted text-sm">2 days</span>
-              </a>
+            </a>
+            <div
+              class="dropdown-menu dropdown-menu-lg dropdown-menu-right"
+              id="notification-dropdown"
+            >
+              <span class="dropdown-item dropdown-header">Notifications</span>
+              <div id="notification-list">
+                <!-- Notifications will be dynamically inserted here -->
+              </div>
               <div class="dropdown-divider"></div>
               <a href="#" class="dropdown-item dropdown-footer"
                 >See All Notifications</a
@@ -436,37 +429,91 @@
                     responseRow.dataset.docId = doc.id; // Store the document ID
 
                     responseRow.innerHTML = `
-                <td>${responseIndex++}</td>
-                <td>
-                  <a>${responseData.type}</a>
-                  <br/>
-                  <small>Created ${createdAt}</small>
-                </td>
-                <td class="project-state text-center">
-                  <span class="badge badge-warning">${createdAt}</span>
-                </td>
-                <td>${userData.name || userData.fullname}</td>
-                <td>${responseData.agency || "N/A"}</td>
-                <td>${responseData.approve_status || "Pending"}</td>
-                <td class="project-state text-center">
-                  <span class="badge badge-success">${expiryDate}</span>
-                </td>
-                <td class="project-actions text-right">
-                  <a class="btn btn-primary btn-sm" href="#">
-                    <i class="fas fa-folder"></i> View
-                  </a>
-                  <a class="btn btn-info btn-sm" href="#">
-                    <i class="fas fa-pencil-alt"></i> Edit
-                  </a>
-                  <a class="btn btn-danger btn-sm delete-btn" href="#" data-doc-id="${
-                    doc.id
-                  }">
-                    <i class="fas fa-trash"></i> Delete
-                  </a>
-                </td>
-              `;
+                      <td>${responseIndex++}</td>
+                      <td>
+                        <a>${responseData.type}</a>
+                        <br/>
+                        <small>Created ${createdAt}</small>
+                      </td>
+                      <td class="project-state text-center">
+                        <span class="badge badge-warning">${createdAt}</span>
+                      </td>
+                      <td>${userData.name || userData.fullname}</td>
+                      <td>${responseData.agency || "N/A"}</td>
+                      <td class="approve-status">${
+                        responseData.approve_status || "Pending"
+                      }</td>
+                      <td class="project-state text-center">
+                        <span class="badge badge-success">${expiryDate}</span>
+                      </td>
+                      <td class="project-actions text-right">
+                        <a class="btn btn-primary btn-sm view-btn" href="#">
+                          <i class="fas fa-folder"></i> View
+                        </a>
+                        <a class="btn btn-info btn-sm edit-btn" href="#">
+                          <i class="fas fa-pencil-alt"></i> Edit
+                        </a>
+                        <a class="btn btn-danger btn-sm delete-btn" href="#" data-doc-id="${
+                          doc.id
+                        }">
+                          <i class="fas fa-trash"></i> Delete
+                        </a>
+                      </td>
+                    `;
 
                     responseTableBody.appendChild(responseRow);
+
+                    // Add event listeners for the "View" button to approve
+                    responseRow
+                      .querySelector(".view-btn")
+                      .addEventListener("click", (event) => {
+                        event.preventDefault();
+                        const docId = responseRow.dataset.docId;
+                        const statusElement =
+                          responseRow.querySelector(".approve-status");
+
+                        // Update Firestore
+                        db.collection("responses")
+                          .doc(docId)
+                          .update({ approve_status: "approved" })
+                          .then(() => {
+                            // Update UI
+                            statusElement.textContent = "approved";
+                            console.log(
+                              `Document with ID ${docId} successfully updated.`
+                            );
+                          })
+                          .catch((error) => {
+                            console.error("Error updating document: ", error);
+                          });
+                      });
+
+                    // Add event listeners for the "Delete" button to delete
+                    responseRow
+                      .querySelector(".delete-btn")
+                      .addEventListener("click", (event) => {
+                        event.preventDefault();
+                        const docId = responseRow.dataset.docId;
+
+                        if (
+                          confirm(
+                            "Are you sure you want to delete this response?"
+                          )
+                        ) {
+                          responseRow.remove();
+                          db.collection("responses")
+                            .doc(docId)
+                            .delete()
+                            .then(() => {
+                              console.log(
+                                `Document with ID ${docId} successfully deleted.`
+                              );
+                            })
+                            .catch((error) => {
+                              console.error("Error removing document: ", error);
+                            });
+                        }
+                      });
                   } else {
                     console.warn("No user found with ID:", userId);
                   }
@@ -486,9 +533,6 @@
 
           // Wait for all user data to be fetched and rows to be populated
           await Promise.all(userPromises);
-
-          // Add event listeners to delete buttons after table is populated
-          addDeleteEventListeners();
         } catch (error) {
           console.error("Error fetching responses:", error);
         }
@@ -503,17 +547,10 @@
         const price = document.getElementById("price").value;
         const status = document.getElementById("status").value;
 
-        if (
-          !userId ||
-          !type ||
-          !expiryDate ||
-          !addedDate ||
-          !price ||
-          !status
-        ) {
-          alert("Please fill in all required fields.");
-          return;
-        }
+        // if (!userId || !type || !expiryDate || !addedDate || !price || !status) {
+        //   alert("Please fill in all required fields.");
+        //   return;
+        // }
 
         // Log the contract details for debugging
         console.log("Contract Details:", {
@@ -543,7 +580,6 @@
             addedDate: new Date(addedDate),
             price: parseFloat(price),
             approve_status: status,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
             agency: "Tunis",
             birthDate: "01/01/2000",
             city: "gab",
@@ -563,32 +599,6 @@
           });
       }
 
-      // Add event listeners to delete buttons
-      function addDeleteEventListeners() {
-        const deleteButtons = document.querySelectorAll(".delete-btn");
-        deleteButtons.forEach((button) => {
-          button.addEventListener("click", (event) => {
-            event.preventDefault();
-            const docId = button.dataset.docId;
-
-            if (confirm("Are you sure you want to delete this contract?")) {
-              db.collection("responses")
-                .doc(docId)
-                .delete()
-                .then(() => {
-                  console.log(
-                    `Document with ID ${docId} successfully deleted.`
-                  );
-                  fetchAndDisplayResponses(); // Refresh the response list
-                })
-                .catch((error) => {
-                  console.error("Error removing document:", error);
-                });
-            }
-          });
-        });
-      }
-
       document.addEventListener("DOMContentLoaded", function () {
         fetchAndDisplayResponses();
         populateUserSelect();
@@ -598,6 +608,65 @@
           .getElementById("submitBtnContract")
           .addEventListener("click", handleAddContract);
       });
+
+      async function fetchAndDisplayNotifications() {
+        const userId = "7YOtOHTHxjgbnAyRsUCrTzsXqlV2"; // Replace with dynamic userId if available
+        const notificationList = document.getElementById("notification-list");
+        const notificationCount = document.getElementById("notification-count");
+
+        // Listen for changes in the notifications collection in real-time
+        db.collection("notifications")
+          .where("userId", "==", userId)
+          .where("isRead", "==", false)
+          .onSnapshot((snapshot) => {
+            notificationList.innerHTML = "";
+            let unreadCount = 0;
+
+            snapshot.forEach((doc) => {
+              const notification = doc.data();
+              unreadCount++;
+
+              const notificationItem = document.createElement("div");
+              notificationItem.className = "dropdown-item";
+              notificationItem.innerHTML = `
+          <i class="fas fa-${notification.icon} mr-2"></i> ${notification.title}
+          <span class="float-right text-muted text-sm">${notification.timestamp
+            .toDate()
+            .toLocaleString()}</span>
+        `;
+
+              // Add click event to mark as read
+              notificationItem.addEventListener("click", () => {
+                markNotificationAsRead(doc.id);
+              });
+
+              notificationList.appendChild(notificationItem);
+            });
+
+            notificationCount.textContent = unreadCount;
+          });
+      }
+
+      // Function to mark a notification as read
+      function markNotificationAsRead(docId) {
+        db.collection("notifications")
+          .doc(docId)
+          .update({
+            isRead: true,
+          })
+          .then(() => {
+            console.log("Notification marked as read.");
+          })
+          .catch((error) => {
+            console.error("Error updating notification: ", error);
+          });
+      }
+
+      // Call the function to fetch and display notifications on page load
+      document.addEventListener(
+        "DOMContentLoaded",
+        fetchAndDisplayNotifications
+      );
     </script>
   </body>
 </html>
